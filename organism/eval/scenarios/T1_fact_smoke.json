@@ -1,0 +1,15 @@
+{
+  "test_id": "T1_fact_smoke",
+  "description": "R-layer smoke: store_event writes a fact, assert_query retrieves it in the same session.",
+  "seed": 42,
+  "steps": [
+    { "step_id": "S0", "action": "reset_user" },
+    { "step_id": "S1", "action": "store_event",
+      "content": "My favourite drink is matcha latte with oat milk, no sugar.",
+      "source": "eval" },
+    { "step_id": "S2", "action": "wait_indexing", "timeout_s": 5 },
+    { "step_id": "S3", "action": "assert_query",
+      "query": "favourite drink matcha latte",
+      "expect": { "must_include": ["matcha", "oat"] } }
+  ]
+}

@@ -1,0 +1,29 @@
+# Development dependencies for Organism project
+# These are additional packages needed for testing and development
+
+# Testing framework
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Code quality
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
+
+# Type stubs
+types-requests>=2.31.0
+
+# Visualization for tests
+matplotlib>=3.7.0
+
+# Eval / NLP helpers (optional, for eval runner)
+razdel>=0.5.0
+pymorphy2>=0.9.1
+rapidfuzz>=3.6.0
+
+# Vector search performance (CRITICAL for production)
+# vectorlite requires apsw (Another Python SQLite Wrapper) instead of stdlib sqlite3
+# Provides 426x speedup for vector search (40ms → 0.09ms)
+apsw>=3.45.1.0,<3.46.0
+vectorlite-py>=0.2.0
+respx>=0.20.0

@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install CPU-only torch
+        run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt -r requirements-dev.txt -r requirements-analytics.txt \
+            --extra-index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install package
+        run: pip install -e . --no-deps
+
+      - name: Run unit + integration tests
+        run: python -m pytest tests/unit/ tests/integration/ -x -q --tb=short
+        env:
+          ORGANISM_SKIP_GPU: "1"

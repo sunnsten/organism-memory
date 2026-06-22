@@ -1,0 +1,11 @@
+__pycache__
+.pytest_cache
+cache
+organism_data
+runs
+sleep_results
+weights
+legacy
+test.db
+.env
+.dockerignore

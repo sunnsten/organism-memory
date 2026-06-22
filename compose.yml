@@ -1,0 +1,120 @@
+services:
+  organism-llama:
+    gpus: all
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: organism-llama
+    ports:
+      - "8000:8000"
+    environment:
+      HF_HOME: /workspace/cache/hf
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONUNBUFFERED: "1"
+      ORGANISM_MODEL_TYPE: "llama31"
+      ORGANISM_MODEL_NAME: "meta-llama/Llama-3.1-8B-Instruct"
+    volumes:
+      - ./cache/hf:/workspace/cache/hf
+      - ./organism_data:/workspace/organism_data
+      - ./weights:/workspace/weights
+      - ./organism_config.yaml:/workspace/organism_config.yaml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 40
+      start_period: 10m
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+
+  organism-qwen35:
+    gpus: all
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: organism-qwen35
+    ports:
+      - "8001:8000"
+    environment:
+      HF_HOME: /workspace/cache/hf
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONUNBUFFERED: "1"
+      ORGANISM_MODEL_TYPE: "qwen35"
+      ORGANISM_MODEL_NAME: "Qwen/Qwen3.5-4B"
+    volumes:
+      - ./cache/hf:/workspace/cache/hf
+      - ./organism_data:/workspace/organism_data
+      - ./weights:/workspace/weights
+      - ./runs:/workspace/runs
+      - ./organism_config.yaml:/workspace/organism_config.yaml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 40
+      start_period: 10m
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+
+  organism-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: pytest
+    volumes:
+      - ./cache/hf:/workspace/cache/hf
+      - ./organism_data:/workspace/organism_data
+    environment:
+      HF_HOME: /workspace/cache/hf
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONUNBUFFERED: "1"
+      # To run tests with a real model, pass via -e:
+      # TEST_USE_REAL_MODEL: "1"
+      # TEST_MODEL_PATH: "/path/to/model"   # optional
+      # TEST_DEVICE: "cuda|cpu|auto"         # optional, defaults to GPU if available
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+    # if deploy is not supported (old Docker Compose), use instead:
+    # gpus: all
+
+  # Interactive container for running tests with a small model (fast, low VRAM).
+  # Usage: docker compose run --rm organism-tests-qwen25
+  # Inside the container: pytest tests/ -v -s
+  organism-tests-qwen25:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: organism-tests-qwen25
+    stdin_open: true
+    tty: true
+    command: bash
+    volumes:
+      # Host path to HuggingFace cache is set via HF_CACHE_DIR in .env
+      # Default: ./cache/hf (local project folder)
+      - ${HF_CACHE_DIR:-./cache/hf}:/workspace/cache/hf
+      - ./organism_data:/workspace/organism_data
+    environment:
+      HF_HOME: /workspace/cache/hf
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONUNBUFFERED: "1"
+      TEST_USE_REAL_MODEL: "1"
+      TEST_MODEL_TYPE: "qwen25"
+      TEST_MODEL_NAME: "Qwen/Qwen2.5-1.5B-Instruct"
+      TEST_DEVICE: "auto"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+
+volumes:
+  hf-cache:

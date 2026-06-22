@@ -1,0 +1,14 @@
+base_model:
+  type: openai
+  model_name: gpt-4o-mini
+  base_url: http://localhost:9999/v1
+  api_key: dummy
+  max_new_tokens: 256
+
+rag:
+  embedder_enabled: false
+  enable_retrieve_db: true
+  top_k_fts: 5
+
+consolidation:
+  enabled: false

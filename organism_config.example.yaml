@@ -1,0 +1,85 @@
+# Organism configuration example
+# Copy to organism_config.yaml and adjust for your setup.
+# See docs/setup.md for full setup instructions.
+
+# ── Main LLM backend ──────────────────────────────────────────────────────────
+#
+# Option A: Local GPU (HuggingFace Transformers)
+base_model:
+  type: qwen35                       # qwen35 | qwen3 | llama31 | llama_cpp | openai
+  model_name: Qwen/Qwen3.5-4B
+  device_map: cuda                   # cuda | cpu | auto
+  dtype: bfloat16
+  load_in_4bit: true                 # 4-bit NF4 via bitsandbytes — ~2.5 GB VRAM
+  max_new_tokens: 256
+  temperature: 0.0
+
+# Option B: vLLM or any OpenAI-compatible server (uncomment to use)
+# base_model:
+#   type: openai
+#   model_name: Qwen/Qwen3.5-4B     # must match the model loaded in vLLM
+#   base_url: http://localhost:8001/v1
+#   api_key: not-needed
+#   max_new_tokens: 512
+#   temperature: 0.7
+#   strip_think: true                # strip <think>...</think> blocks (Qwen3 thinking mode)
+
+# Option C: OpenAI API
+# base_model:
+#   type: openai
+#   model_name: gpt-4.1
+#   base_url: https://api.openai.com/v1
+#   api_key: sk-...
+#   max_new_tokens: 1024
+#   temperature: 0.7
+
+# Option D: Anthropic API
+# base_model:
+#   type: openai                     # Anthropic supports the OpenAI-compatible API
+#   model_name: claude-sonnet-4-6
+#   base_url: https://api.anthropic.com/v1
+#   api_key: sk-ant-...
+#   max_new_tokens: 1024
+#   temperature: 0.7
+
+# Option E: CPU only (llama_cpp / GGUF)
+# base_model:
+#   type: llama_cpp
+#   model_path: /path/to/model.gguf
+#   n_gpu_layers: 0                  # 0 = CPU only; increase to offload layers to GPU
+#   max_new_tokens: 256
+#   temperature: 0.0
+
+# ── Dedicated fact-extraction LLM (optional) ──────────────────────────────────
+#
+# When absent, FactExtractor reuses base_model (shares GPU / API quota).
+# Set this to a smaller local model to avoid GPU contention.
+#
+# fact_llm:
+#   type: openai
+#   model_name: Qwen/Qwen3-4B
+#   base_url: http://localhost:8001/v1
+#   api_key: not-needed
+#   max_new_tokens: 512
+#   temperature: 0.1
+#   strip_think: true
+
+# ── RAG / Embedder ────────────────────────────────────────────────────────────
+rag:
+  embedder_enabled: true
+  embedder_model: Qwen/Qwen3-Embedding-0.6B
+
+  # For a remote vLLM embedder endpoint (uncomment to use):
+  # embedder_base_url: http://localhost:8002/v1
+  # embedder_dim: 1024
+
+# ── Memory mode ───────────────────────────────────────────────────────────────
+#
+# t1  — RAG chunks only (Tier 1)
+# t2  — RAG chunks + LLM-extracted facts (Tier 1 + Tier 2)  [default]
+# t3  — All tiers including ConsolidationWorker (experimental)
+memory_mode: t2
+
+# ── Consolidation (Tier 3 — experimental, disabled by default) ────────────────
+consolidation:
+  enabled: false

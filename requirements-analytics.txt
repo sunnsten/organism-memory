@@ -1,0 +1,2 @@
+# Analytics and observability dependencies
+prometheus-client>=0.20.0

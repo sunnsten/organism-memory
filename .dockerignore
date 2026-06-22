@@ -1,0 +1,22 @@
+# HF cache and heavy assets
+cache/
+**/cache/
+
+# pytest artifacts
+pytest_cache/
+**/__pycache__/
+
+# virtual environments
+venv/
+.venv/
+
+# runtime data and datasets
+organism_data/
+data/
+datasets/
+
+# model weights
+*.pt
+*.bin
+*.safetensors
+*.ckpt

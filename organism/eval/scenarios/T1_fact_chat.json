@@ -1,0 +1,17 @@
+{
+  "test_id": "T1_fact_chat",
+  "description": "C-layer: user mentions drink preference in natural speech, LLM recalls it later.",
+  "seed": 42,
+  "steps": [
+    { "step_id": "S0", "action": "reset_user" },
+    { "step_id": "S1", "role": "user",
+      "content": "I've been drinking matcha latte with oat milk lately — it's become my go-to morning drink." },
+    { "step_id": "S2", "role": "user",
+      "content": "What's the weather like in Amsterdam in October?" },
+    { "step_id": "S3", "role": "user",
+      "content": "I'm thinking about switching to decaf. What do you think of that?" },
+    { "step_id": "S4", "role": "user",
+      "content": "What drink have I been having in the mornings?",
+      "expect": { "must_include": ["matcha"], "must_not_include": ["coffee"] } }
+  ]
+}

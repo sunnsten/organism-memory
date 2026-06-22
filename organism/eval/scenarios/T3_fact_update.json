@@ -1,0 +1,18 @@
+{
+  "test_id": "T3_fact_update",
+  "description": "R-layer: fact A stored, then superseded by fact B — assert_query returns B not A.",
+  "seed": 42,
+  "steps": [
+    { "step_id": "S0", "action": "reset_user" },
+    { "step_id": "S1", "action": "store_event",
+      "content": "My favourite drink is matcha latte.", "source": "eval" },
+    { "step_id": "S2", "action": "wait_indexing", "timeout_s": 5 },
+    { "step_id": "S3", "action": "store_event",
+      "content": "I switched to black tea with lemon.",
+      "source": "eval" },
+    { "step_id": "S4", "action": "wait_indexing", "timeout_s": 5 },
+    { "step_id": "S5", "action": "assert_query",
+      "query": "switched black tea lemon",
+      "expect": { "must_include": ["tea"], "must_not_include": ["matcha"] } }
+  ]
+}

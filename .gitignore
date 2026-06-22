@@ -1,0 +1,178 @@
+# Internal planning documents
+docs/plans/
+
+# ======================
+# Python
+# ======================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+.env
+.venv
+venv/
+env/
+
+# ======================
+# IDE configs
+# ======================
+.vscode/
+.idea/
+
+# ======================
+# SQLite databases (dev artifacts)
+# ======================
+*.db
+
+# ======================
+# Project data
+# ======================
+organism/data/*
+!organism/data/.gitkeep
+
+organism/weights/*
+!organism/weights/.gitkeep
+
+checkpoints/
+runs/
+logs/
+
+# ======================
+# HuggingFace cache
+# ======================
+cache/
+cache/hf/
+cache/hf/**
+cache/**
+/workspace/cache/
+/workspace/cache/hf/
+
+# Fine-grained alternative (if you want explicit control):
+# cache/hf/models--*/
+# cache/hf/.locks/
+# cache/hf/xet/
+
+# ======================
+# Model binaries
+# ======================
+*.pt
+*.bin
+*.safetensors
+
+# ======================
+# Jupyter
+# ======================
+.ipynb_checkpoints/
+
+# ======================
+# OS
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# Docker volume mount directories (empty, created by docker-compose)
+# ======================
+/grafana/
+
+# ======================
+# Git worktrees
+# ======================
+.worktrees/
+.claude/worktrees/
+
+# ======================
+# Runtime artifacts
+# ======================
+organism_data/
+*.log
+server.log
+.coverage
+=0.*
+
+# ======================
+# Local tool configs & Claude Code internals
+# ======================
+.mcp.json
+.claude/
+!.claude/settings.json
+docs/key_api_anth.md
+
+# ======================
+# Local config files (not templates)
+# ======================
+organism_config*.yaml
+organism_proxy*.yaml
+organism_proxy_*.yaml
+
+# ======================
+# Benchmark / eval data
+# ======================
+data/
+!data/README.md
+
+# ======================
+# Research layer — not part of public open-source release
+# ======================
+# Research directories
+organism/research/
+organism/core/memory/neural/
+organism/core/memory/slots/
+organism/weights/
+
+# Research individual files (legacy explicit list, kept for safety)
+organism/core/chat/observe.py
+organism/core/memory/service/consolidation_service.py
+organism/core/memory/service/experience_block_helper.py
+organism/core/stores/ssm_state_store.py
+organism/core/stores/sleep_queue_store.py
+organism/core/stores/context_summary_store.py
+organism/core/stores/candidate_store.py
+organism/core/stores/experience_store.py
+organism/shared/domain/ssm_signals.py
+organism/shared/domain/sleep_queue.py
+organism/shared/domain/context_summary.py
+organism/shared/domain/memory_candidate.py
+
+# Research tests
+tests/sleep/
+tests/perf/
+tests/legacy/
+tests/helpers/memory_helpers.py
+tests/integration/test_candidates_pipeline.py
+tests/integration/test_grounded_builder_contract.py
+tests/unit/test_consolidation.py
+tests/unit/test_consolidation_service.py
+tests/unit/test_context_summary_store.py
+tests/unit/test_candidate_store.py
+tests/unit/test_experience_block_helper.py
+tests/unit/test_experience_store_new.py
+tests/unit/test_experience_blocks.py
+tests/unit/test_sleep_queue_store.py
+tests/unit/test_ssm_signal_integration.py
+tests/unit/test_memory_core.py
+tests/unit/test_memory_core_advanced.py
+tests/unit/test_memory_core_v2.py
+tests/unit/test_memory_core_values.py
+tests/unit/test_neural_memory_imports.py
+tests/unit/test_ssm_full.py
+
+# Proxy and internal tests
+tests/unit/test_proxy_anthropic_converter.py
+tests/unit/test_proxy_auth_forwarding.py
+tests/unit/test_proxy_memory_injector.py
+tests/unit/test_proxy_router_helpers.py
+tests/unit/test_token_metrics.py
+tests/unit/test_attention_trace_variants.py
+tests/integration/test_real_model_backend.py
+
+# Research scripts
+scripts/analyze/
+scripts/sleep/
+scripts/test/
+scripts/run_consolidation.py
+scripts/run_rag_indexer.py
+scripts/benchmark_vectorlite.py
+scripts/proxy_memory_test.py

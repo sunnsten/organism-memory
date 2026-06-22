@@ -1,0 +1,17 @@
+# CPU-only configuration
+# Use when no GPU is available. Requires ~4 GB RAM for Qwen3.5-4B Q4.
+
+memory_mode: t2
+
+base_model:
+  type: llama_cpp
+  model_path: /models/qwen3.5-4b-q4_k_m.gguf   # adjust to your path
+  n_gpu_layers: 0                                # CPU only
+  n_ctx: 8192
+  temperature: 0.7
+  max_new_tokens: 512
+
+rag:
+  embedder_enabled: false   # disable HNSW to avoid numpy/BLAS overhead on CPU
+  enable_retrieve_db: true
+  top_k_fts: 5

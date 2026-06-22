@@ -1,0 +1,83 @@
+# docker-compose.vllm-local.yml
+# Local vLLM services for Organism proxy (main LLM + embeddings).
+#
+# Start:
+#   docker compose -f docker-compose.vllm-local.yml up -d
+#
+# With monitoring:
+#   docker compose -f docker-compose.vllm-local.yml -f monitoring/docker-compose.yml up -d
+#
+# Requirements: NVIDIA Container Toolkit + driver >= 525
+# Environment variables:
+#   HF_TOKEN       — HuggingFace token (if models are private)
+#   HF_CACHE_DIR   — path to model cache (default: ~/.cache/huggingface)
+
+services:
+
+  vllm-llm:
+    # Main LLM for chat + FactExtractor
+    image: vllm/vllm-openai:latest
+    container_name: organism-vllm-llm
+    runtime: nvidia
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+    ports:
+      - "8001:8001"
+    volumes:
+      - ${HF_CACHE_DIR:-~/.cache/huggingface}:/root/.cache/huggingface
+    command: >
+      Qwen/Qwen3.5-4B
+      --port 8001
+      --max-model-len 8192
+      --gpu-memory-utilization 0.80
+      --enable-reasoning
+      --reasoning-parser deepseek_r1
+      --trust-remote-code
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  vllm-embed:
+    image: vllm/vllm-openai:latest
+    container_name: organism-vllm-embed
+    runtime: nvidia
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+    ports:
+      - "8002:8002"
+    volumes:
+      - ${HF_CACHE_DIR:-~/.cache/huggingface}:/root/.cache/huggingface
+    command: >
+      Qwen/Qwen3-Embedding-0.6B
+      --port 8002
+      --task embed
+      --max-model-len 512
+      --gpu-memory-utilization 0.15
+      --trust-remote-code
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

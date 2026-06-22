@@ -1,0 +1,27 @@
+{
+  "test_id": "T4_preference_recall",
+  "description": "R+C layer: several preference facts stored, assert_query per fact, then chat recall.",
+  "seed": 42,
+  "steps": [
+    { "step_id": "S0", "action": "reset_user" },
+    { "step_id": "S1", "action": "store_event",
+      "content": "I prefer dark mode in all my apps.", "source": "eval" },
+    { "step_id": "S2", "action": "store_event",
+      "content": "I use Python 3.13 for all my projects.", "source": "eval" },
+    { "step_id": "S3", "action": "store_event",
+      "content": "My editor of choice is VS Code.", "source": "eval" },
+    { "step_id": "S4", "action": "wait_indexing", "timeout_s": 5 },
+    { "step_id": "S5", "action": "assert_query",
+      "query": "dark mode apps prefer",
+      "expect": { "must_include": ["dark"] } },
+    { "step_id": "S6", "action": "assert_query",
+      "query": "Python projects use",
+      "expect": { "must_include": ["Python"] } },
+    { "step_id": "S7", "action": "assert_query",
+      "query": "VS Code editor choice",
+      "expect": { "must_include": ["VS Code"] } },
+    { "step_id": "S8", "role": "user",
+      "content": "Can you remind me what editor and theme settings I told you about?",
+      "expect": { "must_include": ["dark", "VS Code"] } }
+  ]
+}

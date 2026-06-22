@@ -1,0 +1,17 @@
+{
+  "test_id": "T5_negative_isolation",
+  "description": "R-layer: fact for user_a is not visible to eval_user after reset_user(eval_user).",
+  "seed": 42,
+  "steps": [
+    { "step_id": "S0", "action": "reset_user", "user_id": "user_a" },
+    { "step_id": "S1", "action": "reset_user" },
+    { "step_id": "S2", "action": "store_event",
+      "content": "user_a's favourite city is Tokyo.", "source": "eval",
+      "_comment": "This fact belongs to eval_user (the default user_id in the runner)" },
+    { "step_id": "S3", "action": "wait_indexing", "timeout_s": 5 },
+    { "step_id": "S4", "action": "reset_user" },
+    { "step_id": "S5", "action": "assert_query",
+      "query": "favourite city Tokyo",
+      "expect": { "must_not_include": ["Tokyo"] } }
+  ]
+}

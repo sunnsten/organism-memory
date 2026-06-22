@@ -1,0 +1,19 @@
+# MCP server configuration
+# Uses an OpenAI-compatible local API (vLLM, LM Studio, Ollama, etc.)
+# so no GPU memory is consumed by the Python process itself.
+
+memory_mode: t2
+
+base_model:
+  type: openai
+  base_url: http://localhost:8080/v1
+  model_name: Qwen/Qwen3-8B
+  api_key: not-needed
+  temperature: 0.7
+  max_new_tokens: 512
+
+rag:
+  embedder_enabled: true
+  embedder_model: Qwen/Qwen3-Embedding-0.6B
+  top_k_fts: 5
+  top_k_vector: 5

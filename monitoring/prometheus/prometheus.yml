@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: organism_server
+    static_configs:
+      - targets: ["host.docker.internal:8000"]
+    metrics_path: /metrics/
+
+  - job_name: organism_proxy
+    static_configs:
+      - targets: ["host.docker.internal:9000"]
+    metrics_path: /metrics
+
+  - job_name: vllm_llm
+    static_configs:
+      - targets: ["host.docker.internal:8001"]
+    metrics_path: /metrics
+
+  - job_name: vllm_embed
+    static_configs:
+      - targets: ["host.docker.internal:8002"]
+    metrics_path: /metrics
+
+  - job_name: organism_bench
+    static_configs:
+      - targets: ["host.docker.internal:9100"]
+    metrics_path: /metrics

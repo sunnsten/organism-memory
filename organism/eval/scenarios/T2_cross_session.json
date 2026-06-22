@@ -1,0 +1,19 @@
+{
+  "test_id": "T2_cross_session",
+  "description": "R-layer: fact stored in session 1 is retrievable after session_break (session 2).",
+  "seed": 42,
+  "steps": [
+    { "step_id": "S0", "action": "reset_user" },
+    { "step_id": "S1", "action": "store_event",
+      "content": "I live in Amsterdam and work remotely as a software engineer.",
+      "source": "eval" },
+    { "step_id": "S2", "action": "wait_indexing", "timeout_s": 5 },
+    { "step_id": "S3", "action": "session_break" },
+    { "step_id": "S4", "action": "assert_query",
+      "query": "Amsterdam live work",
+      "expect": { "must_include": ["Amsterdam"] } },
+    { "step_id": "S5", "action": "assert_query",
+      "query": "software engineer remotely",
+      "expect": { "must_include": ["engineer"] } }
+  ]
+}
